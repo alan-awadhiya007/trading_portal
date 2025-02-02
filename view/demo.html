@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Trading</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+    <!-- jQuery Added -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <style>
+        table.dataTable {
+            width: 100% !important;
+            table-layout: auto;
+        }
+
+        .dataTables_wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        /* Custom color for negative quantities (Light Red) */
+        table#trades .negative-quantity {
+            background-color: #f8d7da !important;
+        }
+        /* Custom color for positive quantities (Light Green) */
+        table#trades .positive-quantity {
+            background-color: #d4edda !important;
+        }
+
+    </style>
+</head>
+<body class="container py-4">
+    <h2 class="text-center">Stock Trading</h2>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card p-3">
+                <h3 class="card-title">Buy Trade</h3>
+                <form id="buyForm">
+                    <div class="mb-2"><input class="form-control" type="text" name="stockName" placeholder="Stock Name" required></div>
+                    <div class="mb-2"><input class="form-control" type="number" name="quantity" placeholder="Quantity" required></div>
+                    <div class="mb-2"><input class="form-control" type="text" name="brokerName" placeholder="Broker Name" required></div>
+                    <div class="mb-2"><input class="form-control" type="number" name="price" placeholder="Price" required></div>
+                    <button class="btn btn-primary w-100" type="submit">Buy</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3">
+                <h3 class="card-title">Sell Trade</h3>
+                <form id="sellForm">
+                    <div class="mb-2">
+                        <select class="form-control" name="sellingMethod">
+                            <option value="FIFO" selected>FIFO</option>
+                            <option value="LIFO">LIFO</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><input class="form-control" type="text" name="stockName" placeholder="Stock Name" required></div>
+                    <div class="mb-2"><input class="form-control" type="number" name="quantity" placeholder="Quantity (negative)" required></div>
+                    <div class="mb-2"><input class="form-control" type="text" name="brokerName" placeholder="Broker Name" required></div>
+                    <div class="mb-2"><input class="form-control" type="number" name="price" placeholder="Price" required></div>
+                    <button class="btn btn-danger w-100" type="submit">Sell</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <ul class="nav nav-tabs mb-3" id="tradeTabs">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tradesTable">Trades</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#lotsTable">Lots</a></li>
+    </ul>
+    
+    <div class="tab-content">
+        <div id="tradesTable" class="tab-pane fade show active">
+            <table id="trades" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Trade ID</th>
+                        <th>Stock Name</th>
+                        <th>Broker Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Amount</th>
+                        <th>Created Date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="lotsTable" class="tab-pane fade">
+            <table id="lots" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Lot ID</th>
+                        <th>Trade ID</th>
+                        <th>Stock Name</th>
+                        <th>Lot Quantity</th>
+                        <th>Realized Quantity</th>
+                        <th>Lot Status</th>
+                        <th>Created Date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const apiHostPort = `http://localhost:9000`;
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
+            }
+
+            // Trade Table
+            var tblTrade = $('#trades').DataTable({  // Change #trade to #trades
+                ajax: {
+                    url: `${apiHostPort}/api/trade/all`,
+                    dataSrc: function (json) {
+                        return json.payload.trades || []; // ✅ Prevent errors if undefined
+                    }
+                },
+                columns: [
+                    {data: "tradeId"},
+                    {data: "stockName"},
+                    {data: "brokerName"},
+                    {data: "quantity",
+                        render: function(data, type, row) {
+                            return data < 0 ? "<span class='text-danger'>" + data + "</span>" : "<span class='text-success'>" + data + "</span>";
+                        }
+                    },
+                    {data: "price"},
+                    {data: "amount",
+                        render: function(data, type, row) {
+                            return data < 0 ? "<span class='text-danger'>" + data + "</span>" : "<span class='text-success'>" + data + "</span>";
+                        }
+                    },
+                    {data: "createdAt", render: function(data) { return formatDate(data); }},
+                ],
+                dom: '<"top"flB>rt<"bottom"ip><"clear">',
+                paging: true,
+                scrollY: '60vh',
+                scrollX: true,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                fixedColumns: { leftColumns: 3 },
+                buttons: [{
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: {
+                        columns: [1, 2, 3, 4, 5, 6]
+                    }
+                }],
+                initComplete: function() {
+                    this.api().columns(1).every(function() {
+                        var column = this;
+                        var select = $('<select style="width: 100%" role="combobox"><option value="">Select</option></select>')
+                            .appendTo($(column.header()))
+                            .on('change', function() {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            });
+                        column.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                    });
+                    this.api().columns(2).every(function() {
+                        var column = this;
+                        var select = $('<select style="width: 100%" role="combobox"><option value="">Select</option></select>')
+                            .appendTo($(column.header()))
+                            .on('change', function() {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            });
+                        column.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                    });
+                },
+                footerCallback: function(row, data, start, end, display) {
+                    var api = this.api(), data;
+                    var intVal = function(i) {
+                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                    };
+
+                    // Total over this page
+                    var totalAmount = api.column(5, { page: 'current' }).data().reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                    $(api.column(5).footer()).html('<i class="fa fa-inr"></i> ' + totalAmount + '/-');
+                }
+            });
+
+            // Lot Table
+            var tblLot = $('#lots').DataTable({  // Change #lot to #lots
+                ajax: {
+                    url: `${apiHostPort}/api/lot/all`,
+                    dataSrc: function (json) {
+                        return json.payload.lots || []; // ✅ Prevent errors if undefined
+                    }
+                },
+                columns: [
+                    { data: 'lotId' },
+                    { data: 'tradeId' },
+                    { data: 'stockName' },
+                    { data: 'lotQuantity' },
+                    { data: 'realizedQuantity' },
+                    { data: 'lotStatus' },
+                    {data: "createdAt", render: function(data) { return formatDate(data); }},
+                ],
+                dom: '<"top"flB>rt<"bottom"ip><"clear">',
+                paging: true,
+                scrollY: '60vh',
+                scrollX: true,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                fixedColumns: { leftColumns: 3 },
+                buttons: [{
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: {
+                        columns: [1, 2, 3, 4, 5, 6]
+                    }
+                }],
+                initComplete: function() {
+                    this.api().columns(2).every(function() {
+                        var column = this;
+                        var select = $('<select style="width: 100%" role="combobox"><option value="">Select</option></select>')
+                            .appendTo($(column.header()))
+                            .on('change', function() {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            });
+                        column.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                    });
+                    this.api().columns(5).every(function() {
+                        var column = this;
+                        var select = $('<select style="width: 100%" role="combobox"><option value="">Select</option></select>')
+                            .appendTo($(column.header()))
+                            .on('change', function() {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            });
+                        column.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                    });
+                },
+                footerCallback: function(row, data, start, end, display) {
+                    var api = this.api(), data;
+                    var intVal = function(i) {
+                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                    };
+
+                    // Total over this page
+                    var totalAmount = api.column(5, { page: 'current' }).data().reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                    $(api.column(5).footer()).html('<i class="fa fa-inr"></i> ' + totalAmount + '/-');
+                }
+            });
+
+            function handleFormSubmit(formId, apiEndpoint, isBuy) {
+                $(`#${formId}`).on('submit', async function(e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+                    const data = Object.fromEntries(formData.entries());
+
+                    data.quantity = isBuy ? Math.abs(data.quantity) : -Math.abs(data.quantity);
+                    data.price = parseFloat(data.price);
+
+                    try {
+                        const response = await fetch(`${apiHostPort}${apiEndpoint}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+
+                        if (response.ok) {
+                            tradesTable.ajax.reload();
+                            lotsTable.ajax.reload();
+                            this.reset();
+                        } else {
+                            console.error('Failed to submit:', response.statusText);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            handleFormSubmit('buyForm', '/api/trade/buy', true);
+            handleFormSubmit('sellForm', '/api/trade/sell', false);
+        });
+    </script>
+</body>
+</html>

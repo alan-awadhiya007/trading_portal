@@ -1,0 +1,30 @@
+{
+  "name": "trading_portal",
+  "version": "1.0.0",
+  "description": "fundtec",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "Alankar Awadhiya",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jimp": "^1.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "log4js": "^6.9.1",
+    "moment": "^2.30.1",
+    "mongoose": "^8.9.5",
+    "mongoose-sequence": "^6.0.1",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
+  }
+}
