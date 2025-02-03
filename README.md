@@ -1,6 +1,3 @@
-Here’s the complete **Markdown** content for your `README.md` file:  
-
-```markdown
 # 📊 Stock Trading Web Portal
 
 This project is a **Stock Trading Web Portal** where users can perform Buy and Sell operations with stocks using **FIFO (First-In-First-Out)** and **LIFO (Last-In-First-Out)** methods.  
@@ -16,8 +13,6 @@ Use the following command to clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/yourusername/stock-trading-web-portal.git
-```
-
 ---
 
 ### 2️⃣ Install Dependencies
@@ -28,8 +23,6 @@ Navigate to the project folder and install all required Node.js dependencies:
 cd stock-trading-web-portal
 npm install
 ```
-
----
 
 ### 3️⃣ Set Up Environment Variables
 
