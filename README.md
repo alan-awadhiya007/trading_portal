@@ -127,8 +127,9 @@ cd stock-trading-web-portal
 npm install
 
 # Set up environment variables in .env file
-DB_URI=mongodb://localhost:27017/stock-trading
-PORT=5000
+DATABASE="mongodb://localhost:27017/stock_trading"
+MS_TRADE_PORTAL_HOST=0.0.0.0
+MS_TRADE_PORTAL_PORT=9000
 
 # Start the Node.js server
 npm start
