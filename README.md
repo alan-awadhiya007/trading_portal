@@ -12,7 +12,7 @@ The backend is powered by **Node.js** with **MongoDB**, and the frontend provide
 Use the following command to clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/stock-trading-web-portal.git
+git clone https://github.com/alan-awadhiya007/trading_portal.git
 ---
 
 ### 2️⃣ Install Dependencies
@@ -115,7 +115,7 @@ stock-trading-web-portal/
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/stock-trading-web-portal.git
+git clone https://github.com/alan-awadhiya007/trading_portal.git
 
 # Navigate to the project directory
 cd stock-trading-web-portal
