@@ -31,12 +31,13 @@ npm install
 Create a `.env` file in the root directory and add your environment variables:
 
 ```env
-DB_URI=mongodb://localhost:27017/stock-trading
-PORT=5000
+DATABASE="mongodb://localhost:27017/stock_trading"
+MS_TRADE_PORTAL_HOST=0.0.0.0
+MS_TRADE_PORTAL_PORT=9000
 ```
 
-- **DB_URI:** MongoDB connection string  
-- **PORT:** Port number for running the server  
+- **DATABASE:** MongoDB connection string  
+- **MS_TRADE_PORTAL_PORT:** Port number for running the server  
 
 ---
 
@@ -48,7 +49,7 @@ Run the application using the following command:
 npm start
 ```
 
-This will start the Node.js server on `http://localhost:5000` (or the port defined in `.env`).
+This will start the Node.js server on `http://localhost:9000` (or the port defined in `.env`).
 
 ---
 
