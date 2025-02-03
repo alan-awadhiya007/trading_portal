@@ -96,21 +96,21 @@ stock-trading-web-portal/
 
 ## 📸 Screenshots
 
-### 1️⃣ Cloning the Repository
+### Screenshot
 
-![Clone Repository](./screenshots/clone-command.png)
-
----
-
-### 2️⃣ Installing Dependencies
-
-![NPM Install](./screenshots/npm-install.png)
+![Clone Repository](./screenshots/screenview1.png)
 
 ---
 
-### 3️⃣ Running the Application & Demo
+### Screenshot
 
-![Run Application](./screenshots/run-app.png)
+![NPM Install](./screenshots/screenview2.png)
+
+---
+
+### Screenshot
+
+![Run Application](./screenshots/screenview3.png)
 
 ---
 
