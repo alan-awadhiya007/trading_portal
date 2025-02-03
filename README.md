@@ -15,6 +15,8 @@ Use the following command to clone the repository to your local machine:
 git clone https://github.com/alan-awadhiya007/trading_portal.git
 ---
 
+```
+
 ### 2️⃣ Install Dependencies
 
 Navigate to the project folder and install all required Node.js dependencies:
@@ -23,6 +25,8 @@ Navigate to the project folder and install all required Node.js dependencies:
 cd stock-trading-web-portal
 npm install
 ```
+
+---
 
 ### 3️⃣ Set Up Environment Variables
 
